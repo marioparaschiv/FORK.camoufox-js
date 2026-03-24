@@ -365,7 +365,7 @@ function userCacheDir(appName: string): string {
 }
 
 export function installedVerStr(): string {
-	return Version.fromPath().fullString;
+	return Version.fromPath(camoufoxPath(false)).fullString;
 }
 
 export function camoufoxPath(downloadIfMissing: boolean = true): PathLike {

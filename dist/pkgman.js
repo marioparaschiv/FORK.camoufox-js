@@ -271,7 +271,7 @@ function userCacheDir(appName) {
     }
 }
 export function installedVerStr() {
-    return Version.fromPath().fullString;
+    return Version.fromPath(camoufoxPath(false)).fullString;
 }
 export function camoufoxPath(downloadIfMissing = true) {
     // Check for Python camoufox config (browsers/official/<version>/ layout)
