@@ -90,7 +90,7 @@ class Version {
             throw new FileNotFoundError(`Version information not found at ${versionPath}. Please run \`camoufox fetch\` to install.`);
         }
         const versionData = JSON.parse(fs.readFileSync(versionPath, "utf-8"));
-        return new Version(versionData.release, versionData.version);
+        return new Version(versionData.release ?? versionData.build, versionData.version);
     }
     static isSupportedPath(path) {
         return Version.fromPath(path).isSupported();
@@ -274,6 +274,20 @@ export function installedVerStr() {
     return Version.fromPath().fullString;
 }
 export function camoufoxPath(downloadIfMissing = true) {
+    // Check for Python camoufox config (browsers/official/<version>/ layout)
+    const configPath = path.join(INSTALL_DIR.toString(), "config.json");
+    if (fs.existsSync(configPath)) {
+        try {
+            const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+            if (config.active_version) {
+                const pyPath = path.join(INSTALL_DIR.toString(), config.active_version);
+                if (fs.existsSync(pyPath)) {
+                    return pyPath;
+                }
+            }
+        }
+        catch { }
+    }
     // Ensure the directory exists and is not empty
     if (!fs.existsSync(INSTALL_DIR) || fs.readdirSync(INSTALL_DIR).length === 0) {
         if (!downloadIfMissing) {
